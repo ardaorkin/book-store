@@ -7,6 +7,7 @@
 var app = require("../app");
 var debug = require("debug")("book-store:server");
 var http = require("http");
+const db = require("../db/models");
 
 /**
  * Get port from environment and store in Express.
@@ -79,7 +80,9 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+async function onListening() {
+  await db.sequelize.sync();
+  console.log("All models were synchronized successfully.");
   var addr = server.address();
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
