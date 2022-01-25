@@ -1,0 +1,27 @@
+.App {
+  text-align: center;
+  padding: 3%;
+}
+#table {
+  width: 100%;
+}
+
+#table-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+#add-button {
+  float: left;
+  margin-bottom: 1%;
+}
+
+#book-form {
+  margin: 3%;
+}
+
+.ant-table-row {
+  cursor: pointer;
+}
