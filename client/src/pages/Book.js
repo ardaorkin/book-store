@@ -1,7 +1,9 @@
-import { notification } from "antd";
+import { Button } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import React from "react";
 import BookTable from "../components/BookTable";
-import API_URL from "../config";
+import deleteBook from "../utils/deleteBook";
+import listBooks from "../utils/listBooks";
 const columns = [
   {
     title: "Name",
@@ -40,20 +42,31 @@ const columns = [
     key: "price",
     sorter: (a, b) => a.price - b.price,
   },
+  {
+    title: "Actions",
+    dataIndex: "actions",
+    key: "actions",
+    render: (item, row) => (
+      <Button
+        type="primary"
+        icon={<DeleteOutlined />}
+        onClick={(event) => {
+          event.stopPropagation();
+          return deleteBook(row.id);
+        }}
+        danger
+      >
+        Delete Book
+      </Button>
+    ),
+  },
 ];
 
 const Book = () => {
   const [dataSource, setDataSource] = React.useState([]);
 
   React.useEffect(() => {
-    fetch(`${API_URL}/books`)
-      .then((response) => response.json())
-      .then((result) => {
-        return setDataSource(result);
-      })
-      .catch((error) =>
-        notification.error({ message: error?.message || error })
-      );
+    listBooks().then((books) => setDataSource(books));
   }, []);
 
   return <BookTable dataSource={dataSource} columns={columns} />;

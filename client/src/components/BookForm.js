@@ -1,7 +1,7 @@
-import { Button, Form, Input, InputNumber, notification, Select } from "antd";
-
+import { Button, Form, Input, InputNumber, Select } from "antd";
 import React from "react";
-import API_URL from "../config";
+import createBook from "../utils/createBook";
+import updateBook from "../utils/updateBook";
 
 const { Option } = Select;
 
@@ -9,24 +9,33 @@ const BookForm = (props) => {
   const [form] = Form.useForm();
   const [newBook, setNewBook] = React.useState({});
 
+  React.useEffect(() => {
+    if (props?.record instanceof Object) {
+      if (Object.keys(props.record).length === 0) {
+        form.resetFields();
+        setNewBook({});
+      } else {
+        form.setFieldsValue({ ...props.record });
+        setNewBook(props.record);
+      }
+    } else {
+      form.resetFields();
+      setNewBook({});
+    }
+  }, [props]);
+
   const handleChange = (event) => {
     return setNewBook({ ...newBook, [event.target.name]: event.target.value });
   };
 
   const handleClick = async () => {
-    console.log(newBook);
-    return await fetch(`${API_URL}/books`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newBook),
-    })
-      .then((response) => response.json())
-      .then(() => window.location.reload())
-      .catch((error) =>
-        notification.error({ message: error?.message || error })
-      );
+    if (props?.record instanceof Object && Object.keys(props.record)) {
+      return await updateBook({
+        payload: newBook,
+        where: { id: props?.record?.id },
+      });
+    }
+    return await createBook(newBook);
   };
 
   return (
@@ -48,7 +57,7 @@ const BookForm = (props) => {
       </Form.Item>
 
       <Form.Item label="Author" name="author">
-        <Input name="auhtor" onChange={handleChange} />
+        <Input name="author" onChange={handleChange} />
       </Form.Item>
 
       <Form.Item

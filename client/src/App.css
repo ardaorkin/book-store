@@ -21,3 +21,7 @@
 #book-form {
   margin: 3%;
 }
+
+.ant-table-row {
+  cursor: pointer;
+}
